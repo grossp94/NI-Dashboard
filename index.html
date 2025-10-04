@@ -1,0 +1,369 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2575.5">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+  </style>
+</head>
+<body>
+<p class="p1">&lt;!DOCTYPE html&gt;</p>
+<p class="p1">&lt;html lang="en"&gt;</p>
+<p class="p1">&lt;head&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;meta charset="UTF-8"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;title&gt;Nicaragua Migration Crisis Dashboard&lt;/title&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;script src="https://cdn.tailwindcss.com"&gt;&lt;/script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;style&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>body { margin: 0; padding: 0; }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/style&gt;</p>
+<p class="p1">&lt;/head&gt;</p>
+<p class="p1">&lt;body&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div id="root"&gt;&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;!-- Load React and ReactDOM --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;script crossorigin src="https://unpkg.com/react@18.2.0/umd/react.production.min.js"&gt;&lt;/script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;script crossorigin src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.production.min.js"&gt;&lt;/script&gt;</p>
+<p class="p2"><span class="Apple-converted-space">  </span></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;!-- Load Recharts --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;script src="https://unpkg.com/recharts@2.5.0/dist/Recharts.js"&gt;&lt;/script&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;!-- Main Application Script --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const { useState } = React;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } = Recharts;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>// Icon Components</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const TrendingUp = ({ className }) =&gt; React.createElement('svg',<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">      </span>{ className, fill: 'none', stroke: 'currentColor', viewBox: '0 0 24 24' },</p>
+<p class="p1"><span class="Apple-converted-space">      </span>React.createElement('path', { strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: 2, d: 'M13 7h8m0 0v8m0-8l-8 8-4-4-6 6' })</p>
+<p class="p1"><span class="Apple-converted-space">    </span>);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>const Users = ({ className }) =&gt; React.createElement('svg',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{ className, fill: 'none', stroke: 'currentColor', viewBox: '0 0 24 24' },</p>
+<p class="p1"><span class="Apple-converted-space">      </span>React.createElement('path', { strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: 2, d: 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z' })</p>
+<p class="p1"><span class="Apple-converted-space">    </span>);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>const DollarSign = ({ className }) =&gt; React.createElement('svg',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{ className, fill: 'none', stroke: 'currentColor', viewBox: '0 0 24 24' },</p>
+<p class="p1"><span class="Apple-converted-space">      </span>React.createElement('path', { strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: 2, d: 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z' })</p>
+<p class="p1"><span class="Apple-converted-space">    </span>);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>const AlertTriangle = ({ className }) =&gt; React.createElement('svg',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{ className, fill: 'none', stroke: 'currentColor', viewBox: '0 0 24 24' },</p>
+<p class="p1"><span class="Apple-converted-space">      </span>React.createElement('path', { strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: 2, d: 'M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z' })</p>
+<p class="p1"><span class="Apple-converted-space">    </span>);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>// Data</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const migrationData = [</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{ year: '2017', us: 3164, costaRica: 67, period: 'Before' },</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{ year: '2018', us: 23000, costaRica: 23000, period: 'After' },</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{ year: '2021', us: 56135, costaRica: 175060, period: 'After' },</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{ year: '2022', us: 164600, costaRica: 293750, period: 'After' },</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{ year: '2023', us: 76049, costaRica: 333515, period: 'After' },</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{ year: '2024', us: 91049, costaRica: 386221, period: 'After' }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>];</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>const remittancesData = [</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{ year: '2006-2017 Avg', amount: 1.55, gdp: 9.5, period: 'Before' },</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{ year: '2021', amount: 2.687, gdp: 17.3, period: 'After' },</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{ year: '2022', amount: 3.477, gdp: 20.6, period: 'After' },</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{ year: '2023', amount: 4.631, gdp: 26.2, period: 'After' },</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{ year: '2024', amount: 5.0, gdp: 27.6, period: 'After' }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>];</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>const closuresData = [</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{ category: 'NGOs', count: 1650 },</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{ category: 'Universities', count: 20 },</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{ category: 'Media Outlets', count: 90 },</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{ category: 'Other Orgs', count: 3240 }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>];</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>const comparisonMetrics = {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>before: {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>usEncounters: 3164,</p>
+<p class="p1"><span class="Apple-converted-space">        </span>costaRicaAsylum: 67,</p>
+<p class="p1"><span class="Apple-converted-space">        </span>remittances: 1.55,</p>
+<p class="p1"><span class="Apple-converted-space">        </span>remittancesGDP: 9.5</p>
+<p class="p1"><span class="Apple-converted-space">      </span>},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>after: {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>usEncounters: 91049,</p>
+<p class="p1"><span class="Apple-converted-space">        </span>costaRicaAsylum: 386221,</p>
+<p class="p1"><span class="Apple-converted-space">        </span>remittances: 5.0,</p>
+<p class="p1"><span class="Apple-converted-space">        </span>remittancesGDP: 27.6</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>const COLORS = ['#ef4444', '#f97316', '#f59e0b', '#10b981'];</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>// StatCard Component</p>
+<p class="p1"><span class="Apple-converted-space">    </span>function StatCard({ title, beforeValue, afterValue, change, icon: Icon, unit = '' }) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>return React.createElement('div', { className: 'bg-white rounded-lg shadow-md p-6 border-l-4 border-blue-500' },</p>
+<p class="p1"><span class="Apple-converted-space">        </span>React.createElement('div', { className: 'flex items-center justify-between mb-4' },</p>
+<p class="p1"><span class="Apple-converted-space">          </span>React.createElement('h3', { className: 'text-sm font-semibold text-gray-600 uppercase' }, title),</p>
+<p class="p1"><span class="Apple-converted-space">          </span>React.createElement(Icon, { className: 'w-5 h-5 text-blue-500' })</p>
+<p class="p1"><span class="Apple-converted-space">        </span>),</p>
+<p class="p1"><span class="Apple-converted-space">        </span>React.createElement('div', { className: 'grid grid-cols-2 gap-4' },</p>
+<p class="p1"><span class="Apple-converted-space">          </span>React.createElement('div', null,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>React.createElement('p', { className: 'text-xs text-gray-500 mb-1' }, 'Before 2018'),</p>
+<p class="p1"><span class="Apple-converted-space">            </span>React.createElement('p', { className: 'text-2xl font-bold text-gray-800' }, beforeValue.toLocaleString() + unit)</p>
+<p class="p1"><span class="Apple-converted-space">          </span>),</p>
+<p class="p1"><span class="Apple-converted-space">          </span>React.createElement('div', null,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>React.createElement('p', { className: 'text-xs text-gray-500 mb-1' }, 'After 2018 (2024)'),</p>
+<p class="p1"><span class="Apple-converted-space">            </span>React.createElement('p', { className: 'text-2xl font-bold text-red-600' }, afterValue.toLocaleString() + unit)</p>
+<p class="p1"><span class="Apple-converted-space">          </span>)</p>
+<p class="p1"><span class="Apple-converted-space">        </span>),</p>
+<p class="p1"><span class="Apple-converted-space">        </span>React.createElement('div', { className: 'mt-4 pt-4 border-t border-gray-200' },</p>
+<p class="p1"><span class="Apple-converted-space">          </span>React.createElement('p', { className: 'text-sm text-red-600 font-semibold flex items-center' },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>React.createElement(TrendingUp, { className: 'w-4 h-4 mr-1' }),</p>
+<p class="p1"><span class="Apple-converted-space">            </span>change</p>
+<p class="p1"><span class="Apple-converted-space">          </span>)</p>
+<p class="p1"><span class="Apple-converted-space">        </span>)</p>
+<p class="p1"><span class="Apple-converted-space">      </span>);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>// Main Dashboard Component</p>
+<p class="p1"><span class="Apple-converted-space">    </span>function NicaraguaDashboard() {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const [activeTab, setActiveTab] = useState('overview');</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>return React.createElement('div', { className: 'min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-6' },</p>
+<p class="p1"><span class="Apple-converted-space">        </span>React.createElement('div', { className: 'max-w-7xl mx-auto' },</p>
+<p class="p1"><span class="Apple-converted-space">          </span>// Header</p>
+<p class="p1"><span class="Apple-converted-space">          </span>React.createElement('div', { className: 'bg-white rounded-lg shadow-lg p-8 mb-6' },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>React.createElement('h1', { className: 'text-4xl font-bold text-gray-900 mb-2' }, 'Nicaragua Migration Crisis Dashboard'),</p>
+<p class="p1"><span class="Apple-converted-space">            </span>React.createElement('p', { className: 'text-lg text-gray-600' }, 'Comparing Before (2010-2017) and After (2018-2024) the Government Crackdown'),</p>
+<p class="p1"><span class="Apple-converted-space">            </span>React.createElement('div', { className: 'mt-4 flex items-center gap-2 text-sm text-red-600 bg-red-50 p-3 rounded-lg' },</p>
+<p class="p1"><span class="Apple-converted-space">              </span>React.createElement(AlertTriangle, { className: 'w-5 h-5' }),</p>
+<p class="p1"><span class="Apple-converted-space">              </span>React.createElement('span', { className: 'font-semibold' }, 'Over 604,485 Nicaraguans (10% of population) have fled since 2018')</p>
+<p class="p1"><span class="Apple-converted-space">            </span>)</p>
+<p class="p1"><span class="Apple-converted-space">          </span>),</p>
+<p class="p2"><span class="Apple-converted-space">          </span></p>
+<p class="p1"><span class="Apple-converted-space">          </span>// Navigation</p>
+<p class="p1"><span class="Apple-converted-space">          </span>React.createElement('div', { className: 'bg-white rounded-lg shadow-md mb-6 p-2 flex gap-2' },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>['overview', 'migration', 'economy', 'repression'].map(tab =&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>React.createElement('button', {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>key: tab,</p>
+<p class="p1"><span class="Apple-converted-space">                </span>onClick: () =&gt; setActiveTab(tab),</p>
+<p class="p1"><span class="Apple-converted-space">                </span>className: `flex-1 py-3 px-4 rounded-lg font-semibold transition-colors ${</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>activeTab === tab ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'</p>
+<p class="p1"><span class="Apple-converted-space">                </span>}`</p>
+<p class="p1"><span class="Apple-converted-space">              </span>}, tab.charAt(0).toUpperCase() + tab.slice(1))</p>
+<p class="p1"><span class="Apple-converted-space">            </span>)</p>
+<p class="p1"><span class="Apple-converted-space">          </span>),</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">          </span>// Overview Tab</p>
+<p class="p1"><span class="Apple-converted-space">          </span>activeTab === 'overview' &amp;&amp; React.createElement('div', { className: 'space-y-6' },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>React.createElement('div', { className: 'grid grid-cols-1 md:grid-cols-2 gap-6' },</p>
+<p class="p1"><span class="Apple-converted-space">              </span>React.createElement(StatCard, {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>title: 'US Border Encounters',</p>
+<p class="p1"><span class="Apple-converted-space">                </span>beforeValue: comparisonMetrics.before.usEncounters,</p>
+<p class="p1"><span class="Apple-converted-space">                </span>afterValue: comparisonMetrics.after.usEncounters,</p>
+<p class="p1"><span class="Apple-converted-space">                </span>change: '+2,779% increase',</p>
+<p class="p1"><span class="Apple-converted-space">                </span>icon: Users</p>
+<p class="p1"><span class="Apple-converted-space">              </span>}),</p>
+<p class="p1"><span class="Apple-converted-space">              </span>React.createElement(StatCard, {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>title: 'Costa Rica Asylum Applications',</p>
+<p class="p1"><span class="Apple-converted-space">                </span>beforeValue: comparisonMetrics.before.costaRicaAsylum,</p>
+<p class="p1"><span class="Apple-converted-space">                </span>afterValue: comparisonMetrics.after.costaRicaAsylum,</p>
+<p class="p1"><span class="Apple-converted-space">                </span>change: '+576,400% increase',</p>
+<p class="p1"><span class="Apple-converted-space">                </span>icon: Users</p>
+<p class="p1"><span class="Apple-converted-space">              </span>}),</p>
+<p class="p1"><span class="Apple-converted-space">              </span>React.createElement(StatCard, {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>title: 'Annual Remittances',</p>
+<p class="p1"><span class="Apple-converted-space">                </span>beforeValue: comparisonMetrics.before.remittances,</p>
+<p class="p1"><span class="Apple-converted-space">                </span>afterValue: comparisonMetrics.after.remittances,</p>
+<p class="p1"><span class="Apple-converted-space">                </span>change: '+223% increase',</p>
+<p class="p1"><span class="Apple-converted-space">                </span>icon: DollarSign,</p>
+<p class="p1"><span class="Apple-converted-space">                </span>unit: 'B USD'</p>
+<p class="p1"><span class="Apple-converted-space">              </span>}),</p>
+<p class="p1"><span class="Apple-converted-space">              </span>React.createElement(StatCard, {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>title: 'Remittances as % of GDP',</p>
+<p class="p1"><span class="Apple-converted-space">                </span>beforeValue: comparisonMetrics.before.remittancesGDP,</p>
+<p class="p1"><span class="Apple-converted-space">                </span>afterValue: comparisonMetrics.after.remittancesGDP,</p>
+<p class="p1"><span class="Apple-converted-space">                </span>change: '+190% increase',</p>
+<p class="p1"><span class="Apple-converted-space">                </span>icon: TrendingUp,</p>
+<p class="p1"><span class="Apple-converted-space">                </span>unit: '%'</p>
+<p class="p1"><span class="Apple-converted-space">              </span>})</p>
+<p class="p1"><span class="Apple-converted-space">            </span>),</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>React.createElement('div', { className: 'bg-white rounded-lg shadow-md p-6' },</p>
+<p class="p1"><span class="Apple-converted-space">              </span>React.createElement('h2', { className: 'text-2xl font-bold text-gray-900 mb-4' }, 'Key Impact Facts'),</p>
+<p class="p1"><span class="Apple-converted-space">              </span>React.createElement('div', { className: 'grid grid-cols-1 md:grid-cols-2 gap-4' },</p>
+<p class="p1"><span class="Apple-converted-space">                </span>React.createElement('div', { className: 'bg-blue-50 p-4 rounded-lg' },</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>React.createElement('p', { className: 'text-sm text-gray-600 mb-1' }, 'Organizations Closed'),</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>React.createElement('p', { className: 'text-3xl font-bold text-blue-600' }, '5,000+'),</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>React.createElement('p', { className: 'text-xs text-gray-500 mt-1' }, 'Including NGOs, universities, media')</p>
+<p class="p1"><span class="Apple-converted-space">                </span>),</p>
+<p class="p1"><span class="Apple-converted-space">                </span>React.createElement('div', { className: 'bg-red-50 p-4 rounded-lg' },</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>React.createElement('p', { className: 'text-sm text-gray-600 mb-1' }, 'Citizens Denationalized'),</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>React.createElement('p', { className: 'text-3xl font-bold text-red-600' }, '452'),</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>React.createElement('p', { className: 'text-xs text-gray-500 mt-1' }, 'Stripped of citizenship since 2023')</p>
+<p class="p1"><span class="Apple-converted-space">                </span>),</p>
+<p class="p1"><span class="Apple-converted-space">                </span>React.createElement('div', { className: 'bg-green-50 p-4 rounded-lg' },</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>React.createElement('p', { className: 'text-sm text-gray-600 mb-1' }, 'Households Dependent on Remittances'),</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>React.createElement('p', { className: 'text-3xl font-bold text-green-600' }, '850,000'),</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>React.createElement('p', { className: 'text-xs text-gray-500 mt-1' }, '50% of all family units')</p>
+<p class="p1"><span class="Apple-converted-space">                </span>),</p>
+<p class="p1"><span class="Apple-converted-space">                </span>React.createElement('div', { className: 'bg-purple-50 p-4 rounded-lg' },</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>React.createElement('p', { className: 'text-sm text-gray-600 mb-1' }, 'Population Lost'),</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>React.createElement('p', { className: 'text-3xl font-bold text-purple-600' }, '10%+'),</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>React.createElement('p', { className: 'text-xs text-gray-500 mt-1' }, 'Of total population since 2018')</p>
+<p class="p1"><span class="Apple-converted-space">                </span>)</p>
+<p class="p1"><span class="Apple-converted-space">              </span>)</p>
+<p class="p1"><span class="Apple-converted-space">            </span>)</p>
+<p class="p1"><span class="Apple-converted-space">          </span>),</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">          </span>// Migration Tab</p>
+<p class="p1"><span class="Apple-converted-space">          </span>activeTab === 'migration' &amp;&amp; React.createElement('div', { className: 'space-y-6' },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>React.createElement('div', { className: 'bg-white rounded-lg shadow-md p-6' },</p>
+<p class="p1"><span class="Apple-converted-space">              </span>React.createElement('h2', { className: 'text-2xl font-bold text-gray-900 mb-4' }, 'Migration Trends Over Time'),</p>
+<p class="p1"><span class="Apple-converted-space">              </span>React.createElement(ResponsiveContainer, { width: '100%', height: 400 },</p>
+<p class="p1"><span class="Apple-converted-space">                </span>React.createElement(LineChart, { data: migrationData },</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>React.createElement(CartesianGrid, { strokeDasharray: '3 3' }),</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>React.createElement(XAxis, { dataKey: 'year' }),</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>React.createElement(YAxis, null),</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>React.createElement(Tooltip, { formatter: (value) =&gt; value.toLocaleString() }),</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>React.createElement(Legend, null),</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>React.createElement(Line, { type: 'monotone', dataKey: 'us', stroke: '#3b82f6', strokeWidth: 3, name: 'US Border Encounters' }),</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>React.createElement(Line, { type: 'monotone', dataKey: 'costaRica', stroke: '#ef4444', strokeWidth: 3, name: 'Costa Rica Asylum Apps' })</p>
+<p class="p1"><span class="Apple-converted-space">                </span>)</p>
+<p class="p1"><span class="Apple-converted-space">              </span>)</p>
+<p class="p1"><span class="Apple-converted-space">            </span>),</p>
+<p class="p1"><span class="Apple-converted-space">            </span>React.createElement('div', { className: 'bg-white rounded-lg shadow-md p-6' },</p>
+<p class="p1"><span class="Apple-converted-space">              </span>React.createElement('h3', { className: 'text-xl font-bold text-gray-900 mb-4' }, 'Key Statistics'),</p>
+<p class="p1"><span class="Apple-converted-space">              </span>React.createElement('div', { className: 'space-y-3' },</p>
+<p class="p1"><span class="Apple-converted-space">                </span>React.createElement('p', { className: 'text-gray-700' }, '• 59% of emigrants are aged 13-40 (most productive age group)'),</p>
+<p class="p1"><span class="Apple-converted-space">                </span>React.createElement('p', { className: 'text-gray-700' }, '• 54% of emigrants to Costa Rica are women'),</p>
+<p class="p1"><span class="Apple-converted-space">                </span>React.createElement('p', { className: 'text-gray-700' }, '• Only 7.7% asylum approval rate (30,020 of 386,221 applications)'),</p>
+<p class="p1"><span class="Apple-converted-space">                </span>React.createElement('p', { className: 'text-gray-700' }, '• 2022: Peak year with 328,443 departures')</p>
+<p class="p1"><span class="Apple-converted-space">              </span>)</p>
+<p class="p1"><span class="Apple-converted-space">            </span>)</p>
+<p class="p1"><span class="Apple-converted-space">          </span>),</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">          </span>// Economy Tab</p>
+<p class="p1"><span class="Apple-converted-space">          </span>activeTab === 'economy' &amp;&amp; React.createElement('div', { className: 'space-y-6' },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>React.createElement('div', { className: 'bg-white rounded-lg shadow-md p-6' },</p>
+<p class="p1"><span class="Apple-converted-space">              </span>React.createElement('h2', { className: 'text-2xl font-bold text-gray-900 mb-4' }, 'Remittances Growth'),</p>
+<p class="p1"><span class="Apple-converted-space">              </span>React.createElement(ResponsiveContainer, { width: '100%', height: 400 },</p>
+<p class="p1"><span class="Apple-converted-space">                </span>React.createElement(LineChart, { data: remittancesData },</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>React.createElement(CartesianGrid, { strokeDasharray: '3 3' }),</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>React.createElement(XAxis, { dataKey: 'year' }),</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>React.createElement(YAxis, { yAxisId: 'left' }),</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>React.createElement(YAxis, { yAxisId: 'right', orientation: 'right' }),</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>React.createElement(Tooltip, null),</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>React.createElement(Legend, null),</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>React.createElement(Line, { yAxisId: 'left', type: 'monotone', dataKey: 'amount', stroke: '#10b981', strokeWidth: 3, name: 'Amount (Billions USD)' }),</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>React.createElement(Line, { yAxisId: 'right', type: 'monotone', dataKey: 'gdp', stroke: '#f59e0b', strokeWidth: 3, name: '% of GDP' })</p>
+<p class="p1"><span class="Apple-converted-space">                </span>)</p>
+<p class="p1"><span class="Apple-converted-space">              </span>)</p>
+<p class="p1"><span class="Apple-converted-space">            </span>),</p>
+<p class="p1"><span class="Apple-converted-space">            </span>React.createElement('div', { className: 'grid grid-cols-1 md:grid-cols-3 gap-6' },</p>
+<p class="p1"><span class="Apple-converted-space">              </span>React.createElement('div', { className: 'bg-gradient-to-br from-green-500 to-green-600 rounded-lg shadow-md p-6 text-white' },</p>
+<p class="p1"><span class="Apple-converted-space">                </span>React.createElement('h3', { className: 'text-lg font-semibold mb-2' }, 'Before 2018'),</p>
+<p class="p1"><span class="Apple-converted-space">                </span>React.createElement('p', { className: 'text-4xl font-bold mb-1' }, '$1.55B'),</p>
+<p class="p1"><span class="Apple-converted-space">                </span>React.createElement('p', { className: 'text-sm opacity-90' }, '9.5% of GDP')</p>
+<p class="p1"><span class="Apple-converted-space">              </span>),</p>
+<p class="p1"><span class="Apple-converted-space">              </span>React.createElement('div', { className: 'bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg shadow-md p-6 text-white' },</p>
+<p class="p1"><span class="Apple-converted-space">                </span>React.createElement('h3', { className: 'text-lg font-semibold mb-2' }, '2022 Peak'),</p>
+<p class="p1"><span class="Apple-converted-space">                </span>React.createElement('p', { className: 'text-4xl font-bold mb-1' }, '$3.48B'),</p>
+<p class="p1"><span class="Apple-converted-space">                </span>React.createElement('p', { className: 'text-sm opacity-90' }, '20.6% of GDP')</p>
+<p class="p1"><span class="Apple-converted-space">              </span>),</p>
+<p class="p1"><span class="Apple-converted-space">              </span>React.createElement('div', { className: 'bg-gradient-to-br from-red-500 to-red-600 rounded-lg shadow-md p-6 text-white' },</p>
+<p class="p1"><span class="Apple-converted-space">                </span>React.createElement('h3', { className: 'text-lg font-semibold mb-2' }, '2024 Current'),</p>
+<p class="p1"><span class="Apple-converted-space">                </span>React.createElement('p', { className: 'text-4xl font-bold mb-1' }, '$5.0B'),</p>
+<p class="p1"><span class="Apple-converted-space">                </span>React.createElement('p', { className: 'text-sm opacity-90' }, '27.6% of GDP'),</p>
+<p class="p1"><span class="Apple-converted-space">                </span>React.createElement('p', { className: 'text-xs mt-2 opacity-80' }, '#1 in Latin America')</p>
+<p class="p1"><span class="Apple-converted-space">              </span>)</p>
+<p class="p1"><span class="Apple-converted-space">            </span>)</p>
+<p class="p1"><span class="Apple-converted-space">          </span>),</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">          </span>// Repression Tab</p>
+<p class="p1"><span class="Apple-converted-space">          </span>activeTab === 'repression' &amp;&amp; React.createElement('div', { className: 'space-y-6' },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>React.createElement('div', { className: 'bg-white rounded-lg shadow-md p-6' },</p>
+<p class="p1"><span class="Apple-converted-space">              </span>React.createElement('h2', { className: 'text-2xl font-bold text-gray-900 mb-4' }, 'Civil Society Organizations Closed'),</p>
+<p class="p1"><span class="Apple-converted-space">              </span>React.createElement(ResponsiveContainer, { width: '100%', height: 400 },</p>
+<p class="p1"><span class="Apple-converted-space">                </span>React.createElement(PieChart, null,</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>React.createElement(Pie, {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>data: closuresData,</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>cx: '50%',</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>cy: '50%',</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>labelLine: false,</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>label: ({ name, count }) =&gt; `${name}: ${count}`,</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>outerRadius: 150,</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>fill: '#8884d8',</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>dataKey: 'count'</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>}, closuresData.map((entry, index) =&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>React.createElement(Cell, { key: `cell-${index}`, fill: COLORS[index % COLORS.length] })</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>)),</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>React.createElement(Tooltip, null)</p>
+<p class="p1"><span class="Apple-converted-space">                </span>)</p>
+<p class="p1"><span class="Apple-converted-space">              </span>),</p>
+<p class="p1"><span class="Apple-converted-space">              </span>React.createElement('div', { className: 'text-center mt-4' },</p>
+<p class="p1"><span class="Apple-converted-space">                </span>React.createElement('p', { className: 'text-3xl font-bold text-red-600' }, '5,000+'),</p>
+<p class="p1"><span class="Apple-converted-space">                </span>React.createElement('p', { className: 'text-sm text-gray-600' }, 'Total organizations closed since 2018')</p>
+<p class="p1"><span class="Apple-converted-space">              </span>)</p>
+<p class="p1"><span class="Apple-converted-space">            </span>),</p>
+<p class="p1"><span class="Apple-converted-space">            </span>React.createElement('div', { className: 'grid grid-cols-1 md:grid-cols-2 gap-6' },</p>
+<p class="p1"><span class="Apple-converted-space">              </span>React.createElement('div', { className: 'bg-white rounded-lg shadow-md p-6' },</p>
+<p class="p1"><span class="Apple-converted-space">                </span>React.createElement('h3', { className: 'text-xl font-bold text-gray-900 mb-4' }, 'Acceleration Timeline'),</p>
+<p class="p1"><span class="Apple-converted-space">                </span>React.createElement('div', { className: 'space-y-4' },</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>React.createElement('div', { className: 'flex items-center justify-between p-3 bg-yellow-50 rounded-lg' },</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>React.createElement('span', { className: 'font-semibold text-gray-700' }, 'By 2021'),</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>React.createElement('span', { className: 'text-2xl font-bold text-yellow-600' }, '209')</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>),</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>React.createElement('div', { className: 'flex items-center justify-between p-3 bg-orange-50 rounded-lg' },</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>React.createElement('span', { className: 'font-semibold text-gray-700' }, 'By 2023'),</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>React.createElement('span', { className: 'text-2xl font-bold text-orange-600' }, '1,275')</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>),</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>React.createElement('div', { className: 'flex items-center justify-between p-3 bg-red-50 rounded-lg' },</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>React.createElement('span', { className: 'font-semibold text-gray-700' }, 'August 2024 (1 day)'),</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>React.createElement('span', { className: 'text-2xl font-bold text-red-600' }, '1,500')</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>),</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>React.createElement('div', { className: 'flex items-center justify-between p-3 bg-gray-900 text-white rounded-lg' },</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>React.createElement('span', { className: 'font-semibold' }, 'By 2024 Total'),</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>React.createElement('span', { className: 'text-2xl font-bold' }, '5,000+')</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>)</p>
+<p class="p1"><span class="Apple-converted-space">                </span>)</p>
+<p class="p1"><span class="Apple-converted-space">              </span>),</p>
+<p class="p1"><span class="Apple-converted-space">              </span>React.createElement('div', { className: 'bg-white rounded-lg shadow-md p-6' },</p>
+<p class="p1"><span class="Apple-converted-space">                </span>React.createElement('h3', { className: 'text-xl font-bold text-gray-900 mb-4' }, 'Denationalization Campaign'),</p>
+<p class="p1"><span class="Apple-converted-space">                </span>React.createElement('div', { className: 'border-l-4 border-red-500 pl-4 mb-4' },</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>React.createElement('p', { className: 'text-sm text-gray-600' }, 'Total Denationalized'),</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>React.createElement('p', { className: 'text-3xl font-bold text-red-600' }, '452'),</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>React.createElement('p', { className: 'text-xs text-gray-500 mt-1' }, 'Citizens stripped of nationality')</p>
+<p class="p1"><span class="Apple-converted-space">                </span>),</p>
+<p class="p1"><span class="Apple-converted-space">                </span>React.createElement('div', { className: 'bg-red-50 p-4 rounded-lg' },</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>React.createElement('p', { className: 'text-sm font-semibold text-gray-700 mb-2' }, 'Key Events:'),</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>React.createElement('p', { className: 'text-xs text-gray-600' }, '• Feb 2023: 222 prisoners deported to US'),</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>React.createElement('p', { className: 'text-xs text-gray-600' }, '• Feb 2023: 94 dissidents (mostly in exile)'),</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>React.createElement('p', { className: 'text-xs text-gray-600' }, '• Sep 2024: 135 prisoners to Guatemala'),</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>React.createElement('p', { className: 'text-xs text-gray-600' }, '• 2025: Individual cases continue')</p>
+<p class="p1"><span class="Apple-converted-space">                </span>)</p>
+<p class="p1"><span class="Apple-converted-space">              </span>)</p>
+<p class="p1"><span class="Apple-converted-space">            </span>),</p>
+<p class="p1"><span class="Apple-converted-space">            </span>React.createElement('div', { className: 'bg-red-900 text-white rounded-lg shadow-md p-6' },</p>
+<p class="p1"><span class="Apple-converted-space">              </span>React.createElement('h3', { className: 'text-xl font-bold mb-3' }, 'Notable Single-Day Mass Closure'),</p>
+<p class="p1"><span class="Apple-converted-space">              </span>React.createElement('p', { className: 'text-lg' }, 'August 2024: ',</p>
+<p class="p1"><span class="Apple-converted-space">                </span>React.createElement('span', { className: 'font-bold text-3xl' }, '1,500 NGOs'),</p>
+<p class="p1"><span class="Apple-converted-space">                </span>' banned in one day'</p>
+<p class="p1"><span class="Apple-converted-space">              </span>),</p>
+<p class="p1"><span class="Apple-converted-space">              </span>React.createElement('p', { className: 'text-sm opacity-90 mt-2' }, 'Including the Nicaraguan Red Cross and numerous humanitarian organizations')</p>
+<p class="p1"><span class="Apple-converted-space">            </span>)</p>
+<p class="p1"><span class="Apple-converted-space">          </span>)</p>
+<p class="p1"><span class="Apple-converted-space">        </span>)</p>
+<p class="p1"><span class="Apple-converted-space">      </span>);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>// Render the app</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const root = ReactDOM.createRoot(document.getElementById('root'));</p>
+<p class="p1"><span class="Apple-converted-space">    </span>root.render(React.createElement(NicaraguaDashboard));</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/script&gt;</p>
+<p class="p1">&lt;/body&gt;</p>
+<p class="p1">&lt;/html&gt;</p>
+</body>
+</html>
