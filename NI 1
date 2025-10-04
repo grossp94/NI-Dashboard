@@ -4,446 +4,350 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Nicaragua Migration Crisis Dashboard</title>
-  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-  <script src="https://unpkg.com/recharts@2.5.0/dist/Recharts.js"></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { margin: 0; padding: 0; }
+  </style>
 </head>
 <body>
   <div id="root"></div>
 
-  <script type="text/babel">
-    const { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } = Recharts;
+  <!-- Load React and ReactDOM -->
+  <script crossorigin src="https://unpkg.com/react@18.2.0/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  
+  <!-- Load Recharts -->
+  <script src="https://unpkg.com/recharts@2.5.0/dist/Recharts.js"></script>
+
+  <!-- Main Application Script -->
+  <script>
     const { useState } = React;
+    const { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } = Recharts;
 
-    const TrendingUp = ({ className }) => (
-      <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-      </svg>
+    // Icon Components
+    const TrendingUp = ({ className }) => React.createElement('svg', 
+      { className, fill: 'none', stroke: 'currentColor', viewBox: '0 0 24 24' },
+      React.createElement('path', { strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: 2, d: 'M13 7h8m0 0v8m0-8l-8 8-4-4-6 6' })
     );
 
-    const Users = ({ className }) => (
-      <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-      </svg>
+    const Users = ({ className }) => React.createElement('svg',
+      { className, fill: 'none', stroke: 'currentColor', viewBox: '0 0 24 24' },
+      React.createElement('path', { strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: 2, d: 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z' })
     );
 
-    const DollarSign = ({ className }) => (
-      <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-      </svg>
+    const DollarSign = ({ className }) => React.createElement('svg',
+      { className, fill: 'none', stroke: 'currentColor', viewBox: '0 0 24 24' },
+      React.createElement('path', { strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: 2, d: 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z' })
     );
 
-    const AlertTriangle = ({ className }) => (
-      <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-      </svg>
+    const AlertTriangle = ({ className }) => React.createElement('svg',
+      { className, fill: 'none', stroke: 'currentColor', viewBox: '0 0 24 24' },
+      React.createElement('path', { strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: 2, d: 'M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z' })
     );
 
-    const NicaraguaDashboard = () => {
-      const [activeTab, setActiveTab] = useState('overview');
+    // Data
+    const migrationData = [
+      { year: '2017', us: 3164, costaRica: 67, period: 'Before' },
+      { year: '2018', us: 23000, costaRica: 23000, period: 'After' },
+      { year: '2021', us: 56135, costaRica: 175060, period: 'After' },
+      { year: '2022', us: 164600, costaRica: 293750, period: 'After' },
+      { year: '2023', us: 76049, costaRica: 333515, period: 'After' },
+      { year: '2024', us: 91049, costaRica: 386221, period: 'After' }
+    ];
 
-      const migrationData = [
-        { year: '2017', us: 3164, costaRica: 67, period: 'Before' },
-        { year: '2018', us: 23000, costaRica: 23000, period: 'After' },
-        { year: '2021', us: 56135, costaRica: 175060, period: 'After' },
-        { year: '2022', us: 164600, costaRica: 293750, period: 'After' },
-        { year: '2023', us: 76049, costaRica: 333515, period: 'After' },
-        { year: '2024', us: 91049, costaRica: 386221, period: 'After' }
-      ];
+    const remittancesData = [
+      { year: '2006-2017 Avg', amount: 1.55, gdp: 9.5, period: 'Before' },
+      { year: '2021', amount: 2.687, gdp: 17.3, period: 'After' },
+      { year: '2022', amount: 3.477, gdp: 20.6, period: 'After' },
+      { year: '2023', amount: 4.631, gdp: 26.2, period: 'After' },
+      { year: '2024', amount: 5.0, gdp: 27.6, period: 'After' }
+    ];
 
-      const remittancesData = [
-        { year: '2006-2017 Avg', amount: 1.55, gdp: 9.5, period: 'Before' },
-        { year: '2021', amount: 2.687, gdp: 17.3, period: 'After' },
-        { year: '2022', amount: 3.477, gdp: 20.6, period: 'After' },
-        { year: '2023', amount: 4.631, gdp: 26.2, period: 'After' },
-        { year: '2024', amount: 5.0, gdp: 27.6, period: 'After' }
-      ];
+    const closuresData = [
+      { category: 'NGOs', count: 1650 },
+      { category: 'Universities', count: 20 },
+      { category: 'Media Outlets', count: 90 },
+      { category: 'Other Orgs', count: 3240 }
+    ];
 
-      const closuresData = [
-        { category: 'NGOs', count: 1650 },
-        { category: 'Universities', count: 20 },
-        { category: 'Media Outlets', count: 90 },
-        { category: 'Other Orgs', count: 3240 }
-      ];
-
-      const comparisonMetrics = {
-        before: {
-          usEncounters: 3164,
-          costaRicaAsylum: 67,
-          remittances: 1.55,
-          remittancesGDP: 9.5
-        },
-        after: {
-          usEncounters: 91049,
-          costaRicaAsylum: 386221,
-          remittances: 5.0,
-          remittancesGDP: 27.6
-        }
-      };
-
-      const COLORS = ['#ef4444', '#f97316', '#f59e0b', '#10b981'];
-
-      const StatCard = ({ title, beforeValue, afterValue, change, icon: Icon, unit = '' }) => (
-        <div className="bg-white rounded-lg shadow-md p-6 border-l-4 border-blue-500">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-sm font-semibold text-gray-600 uppercase">{title}</h3>
-            <Icon className="w-5 h-5 text-blue-500" />
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <p className="text-xs text-gray-500 mb-1">Before 2018</p>
-              <p className="text-2xl font-bold text-gray-800">{beforeValue.toLocaleString()}{unit}</p>
-            </div>
-            <div>
-              <p className="text-xs text-gray-500 mb-1">After 2018 (2024)</p>
-              <p className="text-2xl font-bold text-red-600">{afterValue.toLocaleString()}{unit}</p>
-            </div>
-          </div>
-          <div className="mt-4 pt-4 border-t border-gray-200">
-            <p className="text-sm text-red-600 font-semibold flex items-center">
-              <TrendingUp className="w-4 h-4 mr-1" />
-              {change}
-            </p>
-          </div>
-        </div>
-      );
-
-      return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-6">
-          <div className="max-w-7xl mx-auto">
-            <div className="bg-white rounded-lg shadow-lg p-8 mb-6">
-              <h1 className="text-4xl font-bold text-gray-900 mb-2">
-                Nicaragua Migration Crisis Dashboard
-              </h1>
-              <p className="text-lg text-gray-600">
-                Comparing Before (2010-2017) and After (2018-2024) the Government Crackdown
-              </p>
-              <div className="mt-4 flex items-center gap-2 text-sm text-red-600 bg-red-50 p-3 rounded-lg">
-                <AlertTriangle className="w-5 h-5" />
-                <span className="font-semibold">Over 604,485 Nicaraguans (10% of population) have fled since 2018</span>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-lg shadow-md mb-6 p-2 flex gap-2">
-              <button
-                onClick={() => setActiveTab('overview')}
-                className={`flex-1 py-3 px-4 rounded-lg font-semibold transition-colors ${
-                  activeTab === 'overview' ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-              >
-                Overview
-              </button>
-              <button
-                onClick={() => setActiveTab('migration')}
-                className={`flex-1 py-3 px-4 rounded-lg font-semibold transition-colors ${
-                  activeTab === 'migration' ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-              >
-                Migration
-              </button>
-              <button
-                onClick={() => setActiveTab('economy')}
-                className={`flex-1 py-3 px-4 rounded-lg font-semibold transition-colors ${
-                  activeTab === 'economy' ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-              >
-                Economy
-              </button>
-              <button
-                onClick={() => setActiveTab('repression')}
-                className={`flex-1 py-3 px-4 rounded-lg font-semibold transition-colors ${
-                  activeTab === 'repression' ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-              >
-                Repression
-              </button>
-            </div>
-
-            {activeTab === 'overview' && (
-              <div className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <StatCard
-                    title="US Border Encounters"
-                    beforeValue={comparisonMetrics.before.usEncounters}
-                    afterValue={comparisonMetrics.after.usEncounters}
-                    change="+2,779% increase"
-                    icon={Users}
-                  />
-                  <StatCard
-                    title="Costa Rica Asylum Applications"
-                    beforeValue={comparisonMetrics.before.costaRicaAsylum}
-                    afterValue={comparisonMetrics.after.costaRicaAsylum}
-                    change="+576,400% increase"
-                    icon={Users}
-                  />
-                  <StatCard
-                    title="Annual Remittances"
-                    beforeValue={comparisonMetrics.before.remittances}
-                    afterValue={comparisonMetrics.after.remittances}
-                    change="+223% increase"
-                    icon={DollarSign}
-                    unit="B USD"
-                  />
-                  <StatCard
-                    title="Remittances as % of GDP"
-                    beforeValue={comparisonMetrics.before.remittancesGDP}
-                    afterValue={comparisonMetrics.after.remittancesGDP}
-                    change="+190% increase"
-                    icon={TrendingUp}
-                    unit="%"
-                  />
-                </div>
-
-                <div className="bg-white rounded-lg shadow-md p-6">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-4">Key Impact Facts</h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="bg-blue-50 p-4 rounded-lg">
-                      <p className="text-sm text-gray-600 mb-1">Organizations Closed</p>
-                      <p className="text-3xl font-bold text-blue-600">5,000+</p>
-                      <p className="text-xs text-gray-500 mt-1">Including NGOs, universities, media</p>
-                    </div>
-                    <div className="bg-red-50 p-4 rounded-lg">
-                      <p className="text-sm text-gray-600 mb-1">Citizens Denationalized</p>
-                      <p className="text-3xl font-bold text-red-600">452</p>
-                      <p className="text-xs text-gray-500 mt-1">Stripped of citizenship since 2023</p>
-                    </div>
-                    <div className="bg-green-50 p-4 rounded-lg">
-                      <p className="text-sm text-gray-600 mb-1">Households Dependent on Remittances</p>
-                      <p className="text-3xl font-bold text-green-600">850,000</p>
-                      <p className="text-xs text-gray-500 mt-1">50% of all family units</p>
-                    </div>
-                    <div className="bg-purple-50 p-4 rounded-lg">
-                      <p className="text-sm text-gray-600 mb-1">Population Lost</p>
-                      <p className="text-3xl font-bold text-purple-600">10%+</p>
-                      <p className="text-xs text-gray-500 mt-1">Of total population since 2018</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {activeTab === 'migration' && (
-              <div className="space-y-6">
-                <div className="bg-white rounded-lg shadow-md p-6">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-4">Migration Trends Over Time</h2>
-                  <ResponsiveContainer width="100%" height={400}>
-                    <LineChart data={migrationData}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="year" />
-                      <YAxis />
-                      <Tooltip formatter={(value) => value.toLocaleString()} />
-                      <Legend />
-                      <Line type="monotone" dataKey="us" stroke="#3b82f6" strokeWidth={3} name="US Border Encounters" />
-                      <Line type="monotone" dataKey="costaRica" stroke="#ef4444" strokeWidth={3} name="Costa Rica Asylum Apps" />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="bg-white rounded-lg shadow-md p-6">
-                    <h3 className="text-xl font-bold text-gray-900 mb-4">Annual US Border Encounters</h3>
-                    <ResponsiveContainer width="100%" height={300}>
-                      <BarChart data={migrationData}>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="year" />
-                        <YAxis />
-                        <Tooltip formatter={(value) => value.toLocaleString()} />
-                        <Bar dataKey="us" fill="#3b82f6" />
-                      </BarChart>
-                    </ResponsiveContainer>
-                  </div>
-
-                  <div className="bg-white rounded-lg shadow-md p-6">
-                    <h3 className="text-xl font-bold text-gray-900 mb-4">Demographics & Facts</h3>
-                    <div className="space-y-4">
-                      <div className="border-l-4 border-blue-500 pl-4">
-                        <p className="text-sm text-gray-600">Age Distribution</p>
-                        <p className="text-lg font-bold text-gray-900">59% aged 13-40</p>
-                        <p className="text-xs text-gray-500">Most productive age group</p>
-                      </div>
-                      <div className="border-l-4 border-pink-500 pl-4">
-                        <p className="text-sm text-gray-600">Gender (Costa Rica)</p>
-                        <p className="text-lg font-bold text-gray-900">54% women</p>
-                        <p className="text-xs text-gray-500">Majority female migration</p>
-                      </div>
-                      <div className="border-l-4 border-green-500 pl-4">
-                        <p className="text-sm text-gray-600">Asylum Approval Rate</p>
-                        <p className="text-lg font-bold text-gray-900">7.7% (30,020)</p>
-                        <p className="text-xs text-gray-500">Out of 386,221 applications globally</p>
-                      </div>
-                      <div className="border-l-4 border-orange-500 pl-4">
-                        <p className="text-sm text-gray-600">Peak Year</p>
-                        <p className="text-lg font-bold text-gray-900">2022: 328,443 departed</p>
-                        <p className="text-xs text-gray-500">"The year of the exodus"</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {activeTab === 'economy' && (
-              <div className="space-y-6">
-                <div className="bg-white rounded-lg shadow-md p-6">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-4">Remittances Growth</h2>
-                  <ResponsiveContainer width="100%" height={400}>
-                    <LineChart data={remittancesData}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="year" />
-                      <YAxis yAxisId="left" />
-                      <YAxis yAxisId="right" orientation="right" />
-                      <Tooltip />
-                      <Legend />
-                      <Line yAxisId="left" type="monotone" dataKey="amount" stroke="#10b981" strokeWidth={3} name="Amount (Billions USD)" />
-                      <Line yAxisId="right" type="monotone" dataKey="gdp" stroke="#f59e0b" strokeWidth={3} name="% of GDP" />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-lg shadow-md p-6 text-white">
-                    <h3 className="text-lg font-semibold mb-2">Before 2018</h3>
-                    <p className="text-4xl font-bold mb-1">$1.55B</p>
-                    <p className="text-sm opacity-90">9.5% of GDP</p>
-                    <p className="text-xs mt-2 opacity-80">2006-2017 average</p>
-                  </div>
-                  <div className="bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg shadow-md p-6 text-white">
-                    <h3 className="text-lg font-semibold mb-2">2022 Peak</h3>
-                    <p className="text-4xl font-bold mb-1">$3.48B</p>
-                    <p className="text-sm opacity-90">20.6% of GDP</p>
-                    <p className="text-xs mt-2 opacity-80">+124% increase</p>
-                  </div>
-                  <div className="bg-gradient-to-br from-red-500 to-red-600 rounded-lg shadow-md p-6 text-white">
-                    <h3 className="text-lg font-semibold mb-2">2024 Current</h3>
-                    <p className="text-4xl font-bold mb-1">$5.0B</p>
-                    <p className="text-sm opacity-90">27.6% of GDP</p>
-                    <p className="text-xs mt-2 opacity-80">#1 in Latin America</p>
-                  </div>
-                </div>
-
-                <div className="bg-white rounded-lg shadow-md p-6">
-                  <h3 className="text-xl font-bold text-gray-900 mb-4">Global Comparison: Most Remittance-Dependent Economies</h3>
-                  <div className="space-y-3">
-                    {[
-                      { country: 'Tajikistan', percent: 48 },
-                      { country: 'Tonga', percent: 41 },
-                      { country: 'Samoa', percent: 32 },
-                      { country: 'Lebanon', percent: 28 },
-                      { country: 'Nicaragua', percent: 27.6 }
-                    ].map((item, idx) => (
-                      <div key={idx} className="flex items-center gap-4">
-                        <span className="w-32 text-sm font-semibold text-gray-700">{item.country}</span>
-                        <div className="flex-1 bg-gray-200 rounded-full h-8 relative">
-                          <div
-                            className={`h-8 rounded-full flex items-center justify-end pr-3 text-white font-bold text-sm ${
-                              item.country === 'Nicaragua' ? 'bg-red-500' : 'bg-blue-500'
-                            }`}
-                            style={{ width: `${(item.percent / 48) * 100}%` }}
-                          >
-                            {item.percent}%
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {activeTab === 'repression' && (
-              <div className="space-y-6">
-                <div className="bg-white rounded-lg shadow-md p-6">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-4">Civil Society Organizations Closed</h2>
-                  <ResponsiveContainer width="100%" height={400}>
-                    <PieChart>
-                      <Pie
-                        data={closuresData}
-                        cx="50%"
-                        cy="50%"
-                        labelLine={false}
-                        label={({ name, count }) => `${name}: ${count}`}
-                        outerRadius={150}
-                        fill="#8884d8"
-                        dataKey="count"
-                      >
-                        {closuresData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                        ))}
-                      </Pie>
-                      <Tooltip />
-                    </PieChart>
-                  </ResponsiveContainer>
-                  <div className="text-center mt-4">
-                    <p className="text-3xl font-bold text-red-600">5,000+</p>
-                    <p className="text-sm text-gray-600">Total organizations closed since 2018</p>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="bg-white rounded-lg shadow-md p-6">
-                    <h3 className="text-xl font-bold text-gray-900 mb-4">Acceleration Timeline</h3>
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between p-3 bg-yellow-50 rounded-lg">
-                        <span className="font-semibold text-gray-700">By 2021</span>
-                        <span className="text-2xl font-bold text-yellow-600">209</span>
-                      </div>
-                      <div className="flex items-center justify-between p-3 bg-orange-50 rounded-lg">
-                        <span className="font-semibold text-gray-700">By 2023</span>
-                        <span className="text-2xl font-bold text-orange-600">1,275</span>
-                      </div>
-                      <div className="flex items-center justify-between p-3 bg-red-50 rounded-lg">
-                        <span className="font-semibold text-gray-700">August 2024 (1 day)</span>
-                        <span className="text-2xl font-bold text-red-600">1,500</span>
-                      </div>
-                      <div className="flex items-center justify-between p-3 bg-gray-900 text-white rounded-lg">
-                        <span className="font-semibold">By 2024 Total</span>
-                        <span className="text-2xl font-bold">5,000+</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="bg-white rounded-lg shadow-md p-6">
-                    <h3 className="text-xl font-bold text-gray-900 mb-4">Denationalization Campaign</h3>
-                    <div className="space-y-4">
-                      <div className="border-l-4 border-red-500 pl-4">
-                        <p className="text-sm text-gray-600">Total Denationalized</p>
-                        <p className="text-3xl font-bold text-red-600">452</p>
-                        <p className="text-xs text-gray-500 mt-1">Citizens stripped of nationality</p>
-                      </div>
-                      <div className="bg-red-50 p-4 rounded-lg space-y-2">
-                        <p className="text-sm font-semibold text-gray-700">Key Events:</p>
-                        <p className="text-xs text-gray-600">• Feb 2023: 222 prisoners deported to US</p>
-                        <p className="text-xs text-gray-600">• Feb 2023: 94 dissidents (mostly in exile)</p>
-                        <p className="text-xs text-gray-600">• Sep 2024: 135 prisoners to Guatemala</p>
-                        <p className="text-xs text-gray-600">• 2025: Individual cases continue</p>
-                      </div>
-                      <div className="bg-gray-100 p-4 rounded-lg">
-                        <p className="text-xs font-semibold text-gray-700 mb-2">Consequences:</p>
-                        <p className="text-xs text-gray-600">• Property confiscation</p>
-                        <p className="text-xs text-gray-600">• Civil registry erasure</p>
-                        <p className="text-xs text-gray-600">• Pension cancellation</p>
-                        <p className="text-xs text-gray-600">• Children's birth certificates deleted</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-red-900 text-white rounded-lg shadow-md p-6">
-                  <h3 className="text-xl font-bold mb-3">Notable Single-Day Mass Closure</h3>
-                  <p className="text-lg mb-2">August 2024: <span className="font-bold text-3xl">1,500 NGOs</span> banned in one day</p>
-                  <p className="text-sm opacity-90">Including the Nicaraguan Red Cross and numerous humanitarian organizations</p>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      );
+    const comparisonMetrics = {
+      before: {
+        usEncounters: 3164,
+        costaRicaAsylum: 67,
+        remittances: 1.55,
+        remittancesGDP: 9.5
+      },
+      after: {
+        usEncounters: 91049,
+        costaRicaAsylum: 386221,
+        remittances: 5.0,
+        remittancesGDP: 27.6
+      }
     };
 
+    const COLORS = ['#ef4444', '#f97316', '#f59e0b', '#10b981'];
+
+    // StatCard Component
+    function StatCard({ title, beforeValue, afterValue, change, icon: Icon, unit = '' }) {
+      return React.createElement('div', { className: 'bg-white rounded-lg shadow-md p-6 border-l-4 border-blue-500' },
+        React.createElement('div', { className: 'flex items-center justify-between mb-4' },
+          React.createElement('h3', { className: 'text-sm font-semibold text-gray-600 uppercase' }, title),
+          React.createElement(Icon, { className: 'w-5 h-5 text-blue-500' })
+        ),
+        React.createElement('div', { className: 'grid grid-cols-2 gap-4' },
+          React.createElement('div', null,
+            React.createElement('p', { className: 'text-xs text-gray-500 mb-1' }, 'Before 2018'),
+            React.createElement('p', { className: 'text-2xl font-bold text-gray-800' }, beforeValue.toLocaleString() + unit)
+          ),
+          React.createElement('div', null,
+            React.createElement('p', { className: 'text-xs text-gray-500 mb-1' }, 'After 2018 (2024)'),
+            React.createElement('p', { className: 'text-2xl font-bold text-red-600' }, afterValue.toLocaleString() + unit)
+          )
+        ),
+        React.createElement('div', { className: 'mt-4 pt-4 border-t border-gray-200' },
+          React.createElement('p', { className: 'text-sm text-red-600 font-semibold flex items-center' },
+            React.createElement(TrendingUp, { className: 'w-4 h-4 mr-1' }),
+            change
+          )
+        )
+      );
+    }
+
+    // Main Dashboard Component
+    function NicaraguaDashboard() {
+      const [activeTab, setActiveTab] = useState('overview');
+
+      return React.createElement('div', { className: 'min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-6' },
+        React.createElement('div', { className: 'max-w-7xl mx-auto' },
+          // Header
+          React.createElement('div', { className: 'bg-white rounded-lg shadow-lg p-8 mb-6' },
+            React.createElement('h1', { className: 'text-4xl font-bold text-gray-900 mb-2' }, 'Nicaragua Migration Crisis Dashboard'),
+            React.createElement('p', { className: 'text-lg text-gray-600' }, 'Comparing Before (2010-2017) and After (2018-2024) the Government Crackdown'),
+            React.createElement('div', { className: 'mt-4 flex items-center gap-2 text-sm text-red-600 bg-red-50 p-3 rounded-lg' },
+              React.createElement(AlertTriangle, { className: 'w-5 h-5' }),
+              React.createElement('span', { className: 'font-semibold' }, 'Over 604,485 Nicaraguans (10% of population) have fled since 2018')
+            )
+          ),
+          
+          // Navigation
+          React.createElement('div', { className: 'bg-white rounded-lg shadow-md mb-6 p-2 flex gap-2' },
+            ['overview', 'migration', 'economy', 'repression'].map(tab =>
+              React.createElement('button', {
+                key: tab,
+                onClick: () => setActiveTab(tab),
+                className: `flex-1 py-3 px-4 rounded-lg font-semibold transition-colors ${
+                  activeTab === tab ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`
+              }, tab.charAt(0).toUpperCase() + tab.slice(1))
+            )
+          ),
+
+          // Overview Tab
+          activeTab === 'overview' && React.createElement('div', { className: 'space-y-6' },
+            React.createElement('div', { className: 'grid grid-cols-1 md:grid-cols-2 gap-6' },
+              React.createElement(StatCard, {
+                title: 'US Border Encounters',
+                beforeValue: comparisonMetrics.before.usEncounters,
+                afterValue: comparisonMetrics.after.usEncounters,
+                change: '+2,779% increase',
+                icon: Users
+              }),
+              React.createElement(StatCard, {
+                title: 'Costa Rica Asylum Applications',
+                beforeValue: comparisonMetrics.before.costaRicaAsylum,
+                afterValue: comparisonMetrics.after.costaRicaAsylum,
+                change: '+576,400% increase',
+                icon: Users
+              }),
+              React.createElement(StatCard, {
+                title: 'Annual Remittances',
+                beforeValue: comparisonMetrics.before.remittances,
+                afterValue: comparisonMetrics.after.remittances,
+                change: '+223% increase',
+                icon: DollarSign,
+                unit: 'B USD'
+              }),
+              React.createElement(StatCard, {
+                title: 'Remittances as % of GDP',
+                beforeValue: comparisonMetrics.before.remittancesGDP,
+                afterValue: comparisonMetrics.after.remittancesGDP,
+                change: '+190% increase',
+                icon: TrendingUp,
+                unit: '%'
+              })
+            ),
+            
+            React.createElement('div', { className: 'bg-white rounded-lg shadow-md p-6' },
+              React.createElement('h2', { className: 'text-2xl font-bold text-gray-900 mb-4' }, 'Key Impact Facts'),
+              React.createElement('div', { className: 'grid grid-cols-1 md:grid-cols-2 gap-4' },
+                React.createElement('div', { className: 'bg-blue-50 p-4 rounded-lg' },
+                  React.createElement('p', { className: 'text-sm text-gray-600 mb-1' }, 'Organizations Closed'),
+                  React.createElement('p', { className: 'text-3xl font-bold text-blue-600' }, '5,000+'),
+                  React.createElement('p', { className: 'text-xs text-gray-500 mt-1' }, 'Including NGOs, universities, media')
+                ),
+                React.createElement('div', { className: 'bg-red-50 p-4 rounded-lg' },
+                  React.createElement('p', { className: 'text-sm text-gray-600 mb-1' }, 'Citizens Denationalized'),
+                  React.createElement('p', { className: 'text-3xl font-bold text-red-600' }, '452'),
+                  React.createElement('p', { className: 'text-xs text-gray-500 mt-1' }, 'Stripped of citizenship since 2023')
+                ),
+                React.createElement('div', { className: 'bg-green-50 p-4 rounded-lg' },
+                  React.createElement('p', { className: 'text-sm text-gray-600 mb-1' }, 'Households Dependent on Remittances'),
+                  React.createElement('p', { className: 'text-3xl font-bold text-green-600' }, '850,000'),
+                  React.createElement('p', { className: 'text-xs text-gray-500 mt-1' }, '50% of all family units')
+                ),
+                React.createElement('div', { className: 'bg-purple-50 p-4 rounded-lg' },
+                  React.createElement('p', { className: 'text-sm text-gray-600 mb-1' }, 'Population Lost'),
+                  React.createElement('p', { className: 'text-3xl font-bold text-purple-600' }, '10%+'),
+                  React.createElement('p', { className: 'text-xs text-gray-500 mt-1' }, 'Of total population since 2018')
+                )
+              )
+            )
+          ),
+
+          // Migration Tab
+          activeTab === 'migration' && React.createElement('div', { className: 'space-y-6' },
+            React.createElement('div', { className: 'bg-white rounded-lg shadow-md p-6' },
+              React.createElement('h2', { className: 'text-2xl font-bold text-gray-900 mb-4' }, 'Migration Trends Over Time'),
+              React.createElement(ResponsiveContainer, { width: '100%', height: 400 },
+                React.createElement(LineChart, { data: migrationData },
+                  React.createElement(CartesianGrid, { strokeDasharray: '3 3' }),
+                  React.createElement(XAxis, { dataKey: 'year' }),
+                  React.createElement(YAxis, null),
+                  React.createElement(Tooltip, { formatter: (value) => value.toLocaleString() }),
+                  React.createElement(Legend, null),
+                  React.createElement(Line, { type: 'monotone', dataKey: 'us', stroke: '#3b82f6', strokeWidth: 3, name: 'US Border Encounters' }),
+                  React.createElement(Line, { type: 'monotone', dataKey: 'costaRica', stroke: '#ef4444', strokeWidth: 3, name: 'Costa Rica Asylum Apps' })
+                )
+              )
+            ),
+            React.createElement('div', { className: 'bg-white rounded-lg shadow-md p-6' },
+              React.createElement('h3', { className: 'text-xl font-bold text-gray-900 mb-4' }, 'Key Statistics'),
+              React.createElement('div', { className: 'space-y-3' },
+                React.createElement('p', { className: 'text-gray-700' }, '• 59% of emigrants are aged 13-40 (most productive age group)'),
+                React.createElement('p', { className: 'text-gray-700' }, '• 54% of emigrants to Costa Rica are women'),
+                React.createElement('p', { className: 'text-gray-700' }, '• Only 7.7% asylum approval rate (30,020 of 386,221 applications)'),
+                React.createElement('p', { className: 'text-gray-700' }, '• 2022: Peak year with 328,443 departures')
+              )
+            )
+          ),
+
+          // Economy Tab
+          activeTab === 'economy' && React.createElement('div', { className: 'space-y-6' },
+            React.createElement('div', { className: 'bg-white rounded-lg shadow-md p-6' },
+              React.createElement('h2', { className: 'text-2xl font-bold text-gray-900 mb-4' }, 'Remittances Growth'),
+              React.createElement(ResponsiveContainer, { width: '100%', height: 400 },
+                React.createElement(LineChart, { data: remittancesData },
+                  React.createElement(CartesianGrid, { strokeDasharray: '3 3' }),
+                  React.createElement(XAxis, { dataKey: 'year' }),
+                  React.createElement(YAxis, { yAxisId: 'left' }),
+                  React.createElement(YAxis, { yAxisId: 'right', orientation: 'right' }),
+                  React.createElement(Tooltip, null),
+                  React.createElement(Legend, null),
+                  React.createElement(Line, { yAxisId: 'left', type: 'monotone', dataKey: 'amount', stroke: '#10b981', strokeWidth: 3, name: 'Amount (Billions USD)' }),
+                  React.createElement(Line, { yAxisId: 'right', type: 'monotone', dataKey: 'gdp', stroke: '#f59e0b', strokeWidth: 3, name: '% of GDP' })
+                )
+              )
+            ),
+            React.createElement('div', { className: 'grid grid-cols-1 md:grid-cols-3 gap-6' },
+              React.createElement('div', { className: 'bg-gradient-to-br from-green-500 to-green-600 rounded-lg shadow-md p-6 text-white' },
+                React.createElement('h3', { className: 'text-lg font-semibold mb-2' }, 'Before 2018'),
+                React.createElement('p', { className: 'text-4xl font-bold mb-1' }, '$1.55B'),
+                React.createElement('p', { className: 'text-sm opacity-90' }, '9.5% of GDP')
+              ),
+              React.createElement('div', { className: 'bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg shadow-md p-6 text-white' },
+                React.createElement('h3', { className: 'text-lg font-semibold mb-2' }, '2022 Peak'),
+                React.createElement('p', { className: 'text-4xl font-bold mb-1' }, '$3.48B'),
+                React.createElement('p', { className: 'text-sm opacity-90' }, '20.6% of GDP')
+              ),
+              React.createElement('div', { className: 'bg-gradient-to-br from-red-500 to-red-600 rounded-lg shadow-md p-6 text-white' },
+                React.createElement('h3', { className: 'text-lg font-semibold mb-2' }, '2024 Current'),
+                React.createElement('p', { className: 'text-4xl font-bold mb-1' }, '$5.0B'),
+                React.createElement('p', { className: 'text-sm opacity-90' }, '27.6% of GDP'),
+                React.createElement('p', { className: 'text-xs mt-2 opacity-80' }, '#1 in Latin America')
+              )
+            )
+          ),
+
+          // Repression Tab
+          activeTab === 'repression' && React.createElement('div', { className: 'space-y-6' },
+            React.createElement('div', { className: 'bg-white rounded-lg shadow-md p-6' },
+              React.createElement('h2', { className: 'text-2xl font-bold text-gray-900 mb-4' }, 'Civil Society Organizations Closed'),
+              React.createElement(ResponsiveContainer, { width: '100%', height: 400 },
+                React.createElement(PieChart, null,
+                  React.createElement(Pie, {
+                    data: closuresData,
+                    cx: '50%',
+                    cy: '50%',
+                    labelLine: false,
+                    label: ({ name, count }) => `${name}: ${count}`,
+                    outerRadius: 150,
+                    fill: '#8884d8',
+                    dataKey: 'count'
+                  }, closuresData.map((entry, index) =>
+                    React.createElement(Cell, { key: `cell-${index}`, fill: COLORS[index % COLORS.length] })
+                  )),
+                  React.createElement(Tooltip, null)
+                )
+              ),
+              React.createElement('div', { className: 'text-center mt-4' },
+                React.createElement('p', { className: 'text-3xl font-bold text-red-600' }, '5,000+'),
+                React.createElement('p', { className: 'text-sm text-gray-600' }, 'Total organizations closed since 2018')
+              )
+            ),
+            React.createElement('div', { className: 'grid grid-cols-1 md:grid-cols-2 gap-6' },
+              React.createElement('div', { className: 'bg-white rounded-lg shadow-md p-6' },
+                React.createElement('h3', { className: 'text-xl font-bold text-gray-900 mb-4' }, 'Acceleration Timeline'),
+                React.createElement('div', { className: 'space-y-4' },
+                  React.createElement('div', { className: 'flex items-center justify-between p-3 bg-yellow-50 rounded-lg' },
+                    React.createElement('span', { className: 'font-semibold text-gray-700' }, 'By 2021'),
+                    React.createElement('span', { className: 'text-2xl font-bold text-yellow-600' }, '209')
+                  ),
+                  React.createElement('div', { className: 'flex items-center justify-between p-3 bg-orange-50 rounded-lg' },
+                    React.createElement('span', { className: 'font-semibold text-gray-700' }, 'By 2023'),
+                    React.createElement('span', { className: 'text-2xl font-bold text-orange-600' }, '1,275')
+                  ),
+                  React.createElement('div', { className: 'flex items-center justify-between p-3 bg-red-50 rounded-lg' },
+                    React.createElement('span', { className: 'font-semibold text-gray-700' }, 'August 2024 (1 day)'),
+                    React.createElement('span', { className: 'text-2xl font-bold text-red-600' }, '1,500')
+                  ),
+                  React.createElement('div', { className: 'flex items-center justify-between p-3 bg-gray-900 text-white rounded-lg' },
+                    React.createElement('span', { className: 'font-semibold' }, 'By 2024 Total'),
+                    React.createElement('span', { className: 'text-2xl font-bold' }, '5,000+')
+                  )
+                )
+              ),
+              React.createElement('div', { className: 'bg-white rounded-lg shadow-md p-6' },
+                React.createElement('h3', { className: 'text-xl font-bold text-gray-900 mb-4' }, 'Denationalization Campaign'),
+                React.createElement('div', { className: 'border-l-4 border-red-500 pl-4 mb-4' },
+                  React.createElement('p', { className: 'text-sm text-gray-600' }, 'Total Denationalized'),
+                  React.createElement('p', { className: 'text-3xl font-bold text-red-600' }, '452'),
+                  React.createElement('p', { className: 'text-xs text-gray-500 mt-1' }, 'Citizens stripped of nationality')
+                ),
+                React.createElement('div', { className: 'bg-red-50 p-4 rounded-lg' },
+                  React.createElement('p', { className: 'text-sm font-semibold text-gray-700 mb-2' }, 'Key Events:'),
+                  React.createElement('p', { className: 'text-xs text-gray-600' }, '• Feb 2023: 222 prisoners deported to US'),
+                  React.createElement('p', { className: 'text-xs text-gray-600' }, '• Feb 2023: 94 dissidents (mostly in exile)'),
+                  React.createElement('p', { className: 'text-xs text-gray-600' }, '• Sep 2024: 135 prisoners to Guatemala'),
+                  React.createElement('p', { className: 'text-xs text-gray-600' }, '• 2025: Individual cases continue')
+                )
+              )
+            ),
+            React.createElement('div', { className: 'bg-red-900 text-white rounded-lg shadow-md p-6' },
+              React.createElement('h3', { className: 'text-xl font-bold mb-3' }, 'Notable Single-Day Mass Closure'),
+              React.createElement('p', { className: 'text-lg' }, 'August 2024: ',
+                React.createElement('span', { className: 'font-bold text-3xl' }, '1,500 NGOs'),
+                ' banned in one day'
+              ),
+              React.createElement('p', { className: 'text-sm opacity-90 mt-2' }, 'Including the Nicaraguan Red Cross and numerous humanitarian organizations')
+            )
+          )
+        )
+      );
+    }
+
+    // Render the app
     const root = ReactDOM.createRoot(document.getElementById('root'));
-    root.render(<NicaraguaDashboard />);
+    root.render(React.createElement(NicaraguaDashboard));
   </script>
 </body>
-</html>      
+</html>
